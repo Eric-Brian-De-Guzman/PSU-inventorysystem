@@ -1,0 +1,48 @@
+** Database Name: PSU_inventory_system **
+
+
+** Recommended PHP Version 5.6.3 **
+
+
+** Admin Login Details ** // Always use this account //
+
+Username: admin
+Password: admin
+
+**Special User Login Details**
+
+Username: special
+Password: special
+
+**User(Employee) Login Details**
+
+Username: user
+Password: user 
+
+
+** Queries **
+
+includes/sql.php //sales
+
+** Confiurations **
+includes/config.php
+
+** Database **
+includes/database.php
+
+** Roots/Routes **
+includes/load.php
+
+** Controller/Components **
+layouts/admin_menu
+layouts/footer
+layouts/header
+layouts/special_menu
+layouts/user_menu
+
+** assets & library **
+libs/assets
+libs/css/main.css
+libs/images
+libs/js/function
+
