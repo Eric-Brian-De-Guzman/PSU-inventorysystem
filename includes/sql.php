@@ -210,7 +210,22 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_product_table(){
      global $db;
-     $sql  =" SELECT p.id,p.stock_code,p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
+     $sql  =" SELECT p.id,p.stock_code,p.vendor_name,p.remarks,p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
+    $sql  .=" AS categorie,m.file_name AS image";
+    $sql  .=" FROM products p";
+    $sql  .=" LEFT JOIN categories c ON c.id = p.categorie_id";
+    $sql  .=" LEFT JOIN media m ON m.id = p.media_id";
+    $sql  .=" ORDER BY p.id ASC";
+    return find_by_sql($sql);
+
+   }
+      /*--------------------------------------------------------------*/
+   /* Function for Finding all stocks name
+   /* JOIN with product  and media database table
+   /*--------------------------------------------------------------*/
+  function join_stocks_table(){
+     global $db;
+     $sql  =" SELECT p.id,p.stock_code,p.vendor_name,p.remarks,p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
     $sql  .=" AS categorie,m.file_name AS image";
     $sql  .=" FROM products p";
     $sql  .=" LEFT JOIN categories c ON c.id = p.categorie_id";
@@ -287,10 +302,8 @@ function tableExists($table){
    global $db;
    $sql  = "SELECT s.id,s.qty,s.price,s.date,p.name";
    $sql .= " FROM sales s";
-   $sql .= " INNER JOIN products p ON s.product_id = p.id";
-   $sql .= " INNER JOIN categories c ON p.categorie_id = c.id";
-   $sql .= " WHERE c.name = :category";
-   $sql .= " AND DATE(s.date) = :date";
+   $sql .= " LEFT JOIN products p ON s.product_id = p.id";
+   $sql .= " ORDER BY s.date DESC";
    return find_by_sql($sql);
  }
  /*--------------------------------------------------------------*/
@@ -311,15 +324,16 @@ function find_sale_by_dates($start_date,$end_date){
   global $db;
   $start_date  = date("Y-m-d", strtotime($start_date));
   $end_date    = date("Y-m-d", strtotime($end_date));
-  $sql  = "SELECT s.date, p.name,p.sale_price,p.buy_price,";
-  $sql .= "COUNT(s.product_id) AS total_records,";
+  $sql  = "SELECT c.name AS category_name, c.id AS category_id, p.name AS product_name, p.stock_code, DATE(s.date) AS sale_date, ";
+  $sql .= " COUNT(s.product_id) AS total_records,";
   $sql .= "SUM(s.qty) AS total_sales,";
   $sql .= "SUM(p.sale_price * s.qty) AS total_saleing_price,";
   $sql .= "SUM(p.buy_price * s.qty) AS total_buying_price ";
   $sql .= "FROM sales s ";
-  $sql .= "LEFT JOIN products p ON s.product_id = p.id";
+  $sql .= "LEFT JOIN products p ON product_id = p.id ";
+  $sql .= "LEFT JOIN categories c ON categorie_id = c.id ";
   $sql .= " WHERE s.date BETWEEN '{$start_date}' AND '{$end_date}'";
-  $sql .= " GROUP BY DATE(s.date),p.name";
+  $sql .= " GROUP BY DATE(s.date), p.name";
   $sql .= " ORDER BY DATE(s.date) DESC";
   return $db->query($sql);
 }

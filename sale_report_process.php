@@ -13,7 +13,6 @@ $results = '';
     if(empty($errors)):
       $start_date   = remove_junk($db->escape($_POST['start-date']));
       $end_date     = remove_junk($db->escape($_POST['end-date']));
-      $category = remove_junk($db->escape($_POST['category']));
       $results      = find_sale_by_dates($start_date,$end_date);
     else:
       $session->msg("d", $errors);
@@ -128,13 +127,13 @@ $results = '';
             <tbody>
                 <?php foreach($results as $result): ?>
                 <tr>
-                    <td class=""><?php echo remove_junk($result['categorie']);?></td>
-                    <td class=""><?php echo remove_junk($result['date']);?></td>
+                    <td class=""><?php echo remove_junk($result['category_name']);?></td>
+                    <td class=""><?php echo remove_junk($result['sale_date']);?></td>
                     <td class="desc">
-                        <h6><?php echo remove_junk(ucfirst($result['name']));?></h6>
+                        <h6><?php echo remove_junk(ucfirst($result['product_name']));?></h6>
                     </td>
-                    <td class="text-right"><?php echo remove_junk($result['buy_price']);?></td>
-                    <td class="text-right"><?php echo remove_junk($result['sale_price']);?></td>
+                    <td class="text-right"><?php echo remove_junk($result['total_buying_price']);?></td>
+                    <td class="text-right"><?php echo remove_junk($result['total_saleing_price']);?></td>
                     <td class="text-right"><?php echo remove_junk($result['total_sales']);?></td>
                     <td class="text-right"><?php echo remove_junk($result['total_saleing_price']);?></td>
                 </tr>
@@ -142,14 +141,14 @@ $results = '';
             </tbody>
             <tfoot>
                 <tr class="text-right">
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                     <td colspan="1">Grand Total</td>
                     <td> $
                         <?php echo number_format(total_price($results)[0], 2);?>
                     </td>
                 </tr>
                 <tr class="text-right">
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                     <td colspan="1">Profit</td>
                     <td> $<?php echo number_format(total_price($results)[1], 2);?></td>
                 </tr>

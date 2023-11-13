@@ -25,6 +25,8 @@
                             <th> Photo</th>
                             <th> Stock Code </th>
                             <th> Product Title </th>
+                            <th class="text-center" style="width: 10%;"> Vendor Name </th>
+                            <th> Remarks </th>
                             <th class="text-center" style="width: 10%;"> Categories </th>
                             <th class="text-center" style="width: 10%;"> UOI </th>
 
@@ -49,9 +51,10 @@
                             </td>
                             <td> <?php echo remove_junk($product['stock_code']); ?></td>
                             <td> <?php echo remove_junk($product['name']); ?></td>
+                            <td> <?php echo remove_junk($product['vendor_name']); ?></td>
+                            <td> <?php echo remove_junk($product['remarks']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($product['categorie']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($product['UOI']); ?></td>
-
                             <td class="text-center"> <?php echo remove_junk($product['quantity']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($product['buy_price']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($product['sale_price']); ?></td>
