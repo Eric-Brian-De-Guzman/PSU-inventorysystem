@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2023 at 03:43 AM
+-- Generation Time: Nov 14, 2023 at 08:44 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -44,6 +44,7 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 (17, 'Croisant'),
 (8, 'Dairy'),
 (2, 'Dry Spices'),
+(18, 'eric'),
 (12, 'Fish'),
 (14, 'Fresh Vegetables'),
 (11, 'Frozen Veget ( Loc &amp; SBY)'),
@@ -78,6 +79,8 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `UOI` varchar(10) DEFAULT NULL,
   `stock_code` text DEFAULT NULL,
+  `vendor_id` int(11) UNSIGNED NOT NULL,
+  `remarks` varchar(55) NOT NULL,
   `quantity` varchar(50) DEFAULT NULL,
   `buy_price` decimal(25,2) DEFAULT NULL,
   `sale_price` decimal(25,2) NOT NULL,
@@ -90,33 +93,34 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `UOI`, `stock_code`, `quantity`, `buy_price`, `sale_price`, `categorie_id`, `media_id`, `date`) VALUES
-(1, 'LAMB RACK, FROZEN', 'KGM', '40317938', '9', 12.00, 10.00, 1, 0, '2023-11-09 10:48:11'),
-(2, 'LAMB RACK, FROZEN', 'KGM', '40317938', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:12:51'),
-(3, 'LAMB, SHANK', 'KGM', '40318843', '3900', 100.00, 200.00, 1, 0, '2023-11-09 17:13:56'),
-(4, 'LAMB, LOIN, FULL (REMOVE THE CHINE BONE)', 'KGM', '40319983', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:14:37'),
-(5, 'FROZEN LAMB CHOP CUTS, 1.2 CM THICK', 'KGM', '40276908', '4999', 100.00, 200.00, 1, 0, '2023-11-09 17:15:13'),
-(6, 'LEG, LAMB, BONE-IN, FROZEN, 22KG/CT', 'KGM', '40295077', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:15:47'),
-(7, 'BUMBU SEREH', 'KGM', '40277042', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:26:07'),
-(8, 'DRY SAMBAL LADO MUDO, 6 X 2KG/CT', 'CT', '40328878', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:26:39'),
-(9, 'DRY, BUMBU OPOR LQ170203B, 6X2KG/CTN', 'CT', '40276297', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:27:09'),
-(10, 'DRY, BUMBU TALIWANG LQ170202B, 6X2KG/CTN', 'CT', '40276822', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:27:33'),
-(11, 'DRY, BUMBU TUTURUGA LQ170205B, 6X2KG/CTN', 'CT', '40323243', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:28:14'),
-(12, 'DRY, BUMBU WOKU LQ170204B, 6X2KG/CTN', 'CT', '40308944', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:28:57'),
-(13, 'DRY, BUMBU BETUTU LQ170201B, 6X2KG/CTN', 'CT', '40299391', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:29:23'),
-(14, 'DRY BUMBU RICA RICA, 6 X 2 KG/CT', 'CT', '40316275', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:44:31'),
-(15, 'DRY BUMBU RENDANG, 6 X 2 KG/CT', 'CT', '40314418', '5000', 100.00, 200.00, 2, 0, '2023-11-09 18:01:00'),
-(16, 'DRY BUMBU GULAI MERAH, 6 X 2KG/CT', 'CT', '40308942', '5000', 100.00, 200.00, 2, 0, '2023-11-09 18:06:03'),
-(17, 'FROZEN, BUMBU SOUP, 10KG/CTN', 'CT', '40293621', '5000', 1.00, 2.00, 2, 0, '2023-11-09 18:12:05'),
-(18, 'BUMBU ASAM PADE', 'KGM', '40322857', '5000', 1.00, 2.00, 2, 0, '2023-11-09 18:14:28'),
-(19, 'SHALLOTS, FROZEN, WHOLE, PEELED, 2KG X', 'CT', '40325800', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:38:28'),
-(20, 'DRY BUMBU RUJAK, 6 X 2 KG/CT', 'CT', '40320490', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:53:12'),
-(21, 'DRY BUMBU RAWON, 6 X 2 KG/CT', 'CT', '40319986', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:53:47'),
-(22, 'DRY BUMBU KARE, 6 X 2 KG/CT', 'CT', '40312503', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:54:37'),
-(23, 'DRY BUMBU SOTO AYAM, 6 X 2 KG/CT', 'CT', '40320616', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:54:58'),
-(24, 'DRY BUMBU KALIO, 6 X 2KG/CT', 'CT', '40312099', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:56:16'),
-(25, 'DRY SAMBAL CANGKUANG TERI, 6 X 2KG/CT', 'CT', '40331928', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:56:35'),
-(26, 'BUMBU PECEL, 1 KG X 5/CTN', 'CT', '40321949', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:58:58');
+INSERT INTO `products` (`id`, `name`, `UOI`, `stock_code`, `vendor_id`, `remarks`, `quantity`, `buy_price`, `sale_price`, `categorie_id`, `media_id`, `date`) VALUES
+(1, 'LAMB RACK, FROZEN', 'KGM', '40317938', 1, '', '9', 12.00, 10.00, 1, 0, '2023-11-09 10:48:11'),
+(2, 'LAMB RACK, FROZEN', 'KGM', '40317938', 1, '', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:12:51'),
+(3, 'LAMB, SHANK', 'KGM', '40318843', 1, '', '3900', 100.00, 200.00, 1, 0, '2023-11-09 17:13:56'),
+(4, 'LAMB, LOIN, FULL (REMOVE THE CHINE BONE)', 'KGM', '40319983', 1, '', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:14:37'),
+(5, 'FROZEN LAMB CHOP CUTS, 1.2 CM THICK', 'KGM', '40276908', 1, '', '4999', 100.00, 200.00, 1, 0, '2023-11-09 17:15:13'),
+(6, 'LEG, LAMB, BONE-IN, FROZEN, 22KG/CT', 'KGM', '40295077', 1, '', '5000', 100.00, 200.00, 1, 0, '2023-11-09 17:15:47'),
+(7, 'BUMBU SEREH', 'KGM', '40277042', 1, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:26:07'),
+(8, 'DRY SAMBAL LADO MUDO, 6 X 2KG/CT', 'CT', '40328878', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:26:39'),
+(9, 'DRY, BUMBU OPOR LQ170203B, 6X2KG/CTN', 'CT', '40276297', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:27:09'),
+(10, 'DRY, BUMBU TALIWANG LQ170202B, 6X2KG/CTN', 'CT', '40276822', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:27:33'),
+(11, 'DRY, BUMBU TUTURUGA LQ170205B, 6X2KG/CTN', 'CT', '40323243', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:28:14'),
+(12, 'DRY, BUMBU WOKU LQ170204B, 6X2KG/CTN', 'CT', '40308944', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:28:57'),
+(13, 'DRY, BUMBU BETUTU LQ170201B, 6X2KG/CTN', 'CT', '40299391', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 17:29:23'),
+(14, 'DRY BUMBU RICA RICA, 6 X 2 KG/CT', 'CT', '40316275', 0, '', '4999', 100.00, 200.00, 2, 0, '2023-11-09 17:44:31'),
+(15, 'DRY BUMBU RENDANG, 6 X 2 KG/CT', 'CT', '40314418', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 18:01:00'),
+(16, 'DRY BUMBU GULAI MERAH, 6 X 2KG/CT', 'CT', '40308942', 0, '', '5000', 100.00, 200.00, 2, 0, '2023-11-09 18:06:03'),
+(17, 'FROZEN, BUMBU SOUP, 10KG/CTN', 'CT', '40293621', 0, '', '5000', 1.00, 2.00, 2, 0, '2023-11-09 18:12:05'),
+(18, 'BUMBU ASAM PADE', 'KGM', '40322857', 0, '', '5000', 1.00, 2.00, 2, 0, '2023-11-09 18:14:28'),
+(19, 'SHALLOTS, FROZEN, WHOLE, PEELED, 2KG X', 'CT', '40325800', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:38:28'),
+(20, 'DRY BUMBU RUJAK, 6 X 2 KG/CT', 'CT', '40320490', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:53:12'),
+(21, 'DRY BUMBU RAWON, 6 X 2 KG/CT', 'CT', '40319986', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:53:47'),
+(22, 'DRY BUMBU KARE, 6 X 2 KG/CT', 'CT', '40312503', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:54:37'),
+(23, 'DRY BUMBU SOTO AYAM, 6 X 2 KG/CT', 'CT', '40320616', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:54:58'),
+(24, 'DRY BUMBU KALIO, 6 X 2KG/CT', 'CT', '40312099', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:56:16'),
+(25, 'DRY SAMBAL CANGKUANG TERI, 6 X 2KG/CT', 'CT', '40331928', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:56:35'),
+(26, 'BUMBU PECEL, 1 KG X 5/CTN', 'CT', '40321949', 0, '', '10', 1.00, 2.00, 2, 0, '2023-11-09 18:58:58'),
+(27, 'lamb', 'KGM', '123r212erewq', 0, '50%PUFD', '152', 12.00, 100.00, 1, 0, '2023-11-13 01:20:41');
 
 -- --------------------------------------------------------
 
@@ -127,19 +131,48 @@ INSERT INTO `products` (`id`, `name`, `UOI`, `stock_code`, `quantity`, `buy_pric
 CREATE TABLE `sales` (
   `id` int(11) UNSIGNED NOT NULL,
   `product_id` int(11) UNSIGNED NOT NULL,
+  `vendor_id` int(11) UNSIGNED NOT NULL,
   `qty` int(11) NOT NULL,
   `price` decimal(25,2) NOT NULL,
-  `date` date NOT NULL
+  `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `sales`
 --
 
-INSERT INTO `sales` (`id`, `product_id`, `qty`, `price`, `date`) VALUES
-(1, 1, 1, 10.00, '2023-11-09'),
-(2, 5, 1, 200.00, '2023-11-09'),
-(3, 3, 1100, 220000.00, '2023-11-09');
+INSERT INTO `sales` (`id`, `product_id`, `vendor_id`, `qty`, `price`, `date`) VALUES
+(1, 1, 0, 1, 10.00, '2023-11-09 00:00:00'),
+(2, 5, 0, 1, 200.00, '2023-11-09 00:00:00'),
+(3, 3, 0, 1100, 220000.00, '2023-11-09 00:00:00'),
+(4, 14, 0, 1, 200.00, '2023-11-11 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stocks`
+--
+
+CREATE TABLE `stocks` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) UNSIGNED NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stocks`
+--
+
+INSERT INTO `stocks` (`id`, `product_id`, `quantity`, `date`) VALUES
+(1, 13, 15, '2023-11-13'),
+(7, 12, 2023, '0000-00-00'),
+(11, 12, 2023, '0000-00-00'),
+(12, 12, 2023, '0000-00-00'),
+(18, 12, 2023, '0000-00-00'),
+(19, 12, 2023, '0000-00-00'),
+(23, 2, 12, '2023-11-13'),
+(24, 2, 12, '2023-11-13');
 
 -- --------------------------------------------------------
 
@@ -163,7 +196,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `username`, `password`, `user_level`, `image`, `status`, `last_login`) VALUES
-(1, 'Harry Denn', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'no_image.png', 1, '2023-11-10 09:52:02'),
+(1, 'Harry Denn', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'no_image.png', 1, '2023-11-14 14:11:02'),
 (2, 'John Walker', 'special', 'ba36b97a41e7faf742ab09bf88405ac04f99599a', 2, 'no_image.png', 1, '2023-11-08 05:25:21'),
 (3, 'Christopher', 'user', '12dea96fec20593566ab75692c9949596833adc9', 3, 'no_image.png', 1, '2021-04-04 19:54:46'),
 (4, 'Natie Williams', 'natie', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', 3, 'no_image.png', 1, NULL),
@@ -191,6 +224,24 @@ INSERT INTO `user_groups` (`id`, `group_name`, `group_level`, `group_status`) VA
 (2, 'special', 2, 1),
 (3, 'User', 3, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendor`
+--
+
+CREATE TABLE `vendor` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `vendor_name` varchar(55) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `vendor`
+--
+
+INSERT INTO `vendor` (`id`, `vendor_name`) VALUES
+(1, 'Eric');
+
 --
 -- Indexes for dumped tables
 --
@@ -215,14 +266,30 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `product_id` (`id`),
   ADD KEY `categorie_id` (`categorie_id`),
-  ADD KEY `media_id` (`media_id`);
+  ADD KEY `media_id` (`media_id`),
+  ADD KEY `vendor_id` (`vendor_id`) USING BTREE;
 
 --
 -- Indexes for table `sales`
 --
 ALTER TABLE `sales`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `vendor_id` (`vendor_id`) USING BTREE;
+
+--
+-- Indexes for table `stocks`
+--
+ALTER TABLE `stocks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`) USING BTREE;
+
+--
+-- Indexes for table `vendor`
+--
+ALTER TABLE `vendor`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `vendor_name` (`vendor_name`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -232,7 +299,7 @@ ALTER TABLE `sales`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `media`
@@ -244,13 +311,25 @@ ALTER TABLE `media`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `stocks`
+--
+ALTER TABLE `stocks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `vendor`
+--
+ALTER TABLE `vendor`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -267,6 +346,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `sales`
   ADD CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+--
+-- Constraints for table `stocks`
+--
+ALTER TABLE `stocks`
+  ADD CONSTRAINT `stocks_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

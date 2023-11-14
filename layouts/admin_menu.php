@@ -16,6 +16,12 @@
         </ul>
     </li>
     <li>
+        <a href="vendor.php">
+            <i class="glyphicon glyphicon-tag"></i>
+            <span>Vendors</span>
+        </a>
+    </li>
+    <li>
         <a href="categorie.php">
             <i class="glyphicon glyphicon-indent-left"></i>
             <span>Categories</span>
