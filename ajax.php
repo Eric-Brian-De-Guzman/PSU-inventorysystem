@@ -1,11 +1,13 @@
 <?php
   require_once('includes/load.php');
   if (!$session->isUserLoggedIn(true)) { redirect('index.php', false);}
+ 
 ?>
 
 <?php
  // Auto suggetion
     $html = '';
+    $all_vendor = find_all('vendor');
    if(isset($_POST['product_name']) && strlen($_POST['product_name']))
    {
      $products = find_product_by_title($_POST['product_name']);
@@ -26,7 +28,7 @@
       echo json_encode($html);
    }
  ?>
- <?php
+<?php
  // find all product
   if(isset($_POST['p_name']) && strlen($_POST['p_name']))
   {
@@ -35,10 +37,21 @@
         foreach ($results as $result) {
 
           $html .= "<tr>";
-
-          $html .= "<td id=\"s_name\">".$result['name']."</td>";
           $html .= "<input type=\"hidden\" name=\"s_id\" value=\"{$result['id']}\">";
+          $html .= "<td id=\"s_name\">".$result['name']."</td>";    
+          $html  .= "<td style=\"width: 15%;\">";
+          $html .= "<select class=\"form-control\" name=\"v_id\">";
+$html .= "<option value=\"\">Select Vendor</option>";
+
+foreach ($all_vendor as $ven) {
+    $html .= "<option value=\"" . (int)$ven['id'] . "\">" . $ven['vendor_name'] . "</option>";
+}
+
+$html .= "</select>";
+
+          $html  .= "</td>";
           $html  .= "<td>";
+
           $html  .= "<input type=\"text\" class=\"form-control\" name=\"price\" value=\"{$result['sale_price']}\">";
           $html  .= "</td>";
           $html .= "<td id=\"s_qty\">";
@@ -46,6 +59,9 @@
           $html  .= "</td>";
           $html  .= "<td>";
           $html  .= "<input type=\"text\" class=\"form-control\" name=\"total\" value=\"{$result['sale_price']}\">";
+          $html  .= "</td>";
+          $html  .= "<td>";
+          $html  .= "<input type=\"text\" class=\"form-control\" name=\"remarks\" placeholder=\"Remarks\">";
           $html  .= "</td>";
           $html  .= "<td>";
           $html  .= "<input type=\"date\" class=\"form-control datePicker\" name=\"date\" data-date data-date-format=\"yyyy-mm-dd\">";

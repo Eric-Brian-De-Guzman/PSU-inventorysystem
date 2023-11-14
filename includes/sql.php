@@ -210,12 +210,27 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_product_table(){
      global $db;
-     $sql  =" SELECT p.id,p.stock_code,p.vendor_name,p.remarks,p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
+     $sql  =" SELECT p.id,p.stock_code, p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
     $sql  .=" AS categorie,m.file_name AS image";
     $sql  .=" FROM products p";
     $sql  .=" LEFT JOIN categories c ON c.id = p.categorie_id";
     $sql  .=" LEFT JOIN media m ON m.id = p.media_id";
     $sql  .=" ORDER BY p.id ASC";
+    return find_by_sql($sql);
+
+   }
+     /*--------------------------------------------------------------*/
+   /* Function for Finding all sales name
+   /* JOIN with categorie  and media database table
+   /*--------------------------------------------------------------*/
+  function join_sales_table(){
+     global $db;
+     $sql  =" SELECT s.id,s.qty,s.price,s.remarks,s.date,p.name,v.vendor_name";
+     $sql  .=" AS vendor";
+    $sql  .=" FROM sales s";
+    $sql  .=" INNER JOIN products p ON p.id = s.id";
+    $sql  .=" INNER JOIN vendor v ON v.id = s.vendor_id";
+    $sql  .=" ORDER BY s.id ASC";
     return find_by_sql($sql);
 
    }
@@ -225,7 +240,7 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_stocks_table(){
      global $db;
-     $sql  =" SELECT p.id,p.stock_code,p.vendor_name,p.remarks,p.name,p.UOI,p.quantity,p.buy_price,p.sale_price,p.media_id,p.date,c.name";
+     $sql  =" SELECT s.id, s.product_id, s.quantity, s.date, p.name, p.vendor_name";
     $sql  .=" AS categorie,m.file_name AS image";
     $sql  .=" FROM products p";
     $sql  .=" LEFT JOIN categories c ON c.id = p.categorie_id";
@@ -255,7 +270,7 @@ function tableExists($table){
     global $db;
     $sql  = "SELECT * FROM products ";
     $sql .= " WHERE name ='{$title}'";
-    $sql .=" LIMIT 1";
+    $sql .=" LIMIT 5";
     return find_by_sql($sql);
   }
 

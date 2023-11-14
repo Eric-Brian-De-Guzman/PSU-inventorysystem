@@ -14,8 +14,6 @@
      $p_name  = remove_junk($db->escape($_POST['product-title']));
      $p_uoi  = remove_junk($db->escape($_POST['product-uoi']));
      $p_code  = remove_junk($db->escape($_POST['stock-code']));
-     $p_v_name  = remove_junk($db->escape($_POST['vendor_name']));
-     $p_remarks  = remove_junk($db->escape($_POST['remarks']));
      $p_cat   = remove_junk($db->escape($_POST['product-categorie']));
      $p_qty   = remove_junk($db->escape($_POST['product-quantity']));
      $p_buy   = remove_junk($db->escape($_POST['buying-price']));
@@ -29,7 +27,7 @@
      $query  = "INSERT INTO products (";
      $query .=" name,UOI,stock_code,vendor_name,remarks,quantity,buy_price,sale_price,categorie_id,media_id,date";
      $query .=") VALUES (";
-     $query .=" '{$p_name}','{$p_uoi}', '{$p_code}', '{$p_v_name}', '{$p_remarks}', '{$p_qty}', '{$p_buy}', '{$p_sale}', '{$p_cat}', '{$media_id}', '{$date}'";
+     $query .=" '{$p_name}','{$p_uoi}', '{$p_code}', '{$p_qty}', '{$p_buy}', '{$p_sale}', '{$p_cat}', '{$media_id}', '{$date}'";
      $query .=")";
      $query .=" ON DUPLICATE KEY UPDATE name='{$p_name}'";
      if($db->query($query)){
@@ -107,27 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="glyphicon glyphicon-font"></i>
-                                        </span>
-                                        <input type="text" class="form-control" name="vendor_name" placeholder="Vendor">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="glyphicon glyphicon-paperclip"></i>
-                                        </span>
-                                        <input type="text" class="form-control" name="remarks" placeholder="Remarks">
-                                    </div>
-                                </div>
 
-                            </div>
-                        </div>
 
                         <div class="form-group">
                             <div class="row">

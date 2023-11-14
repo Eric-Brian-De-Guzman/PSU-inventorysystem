@@ -7,19 +7,21 @@
 <?php
 
   if(isset($_POST['add_sale'])){
-    $req_fields = array('s_id','quantity','price','total', 'date' );
+    $req_fields = array('s_id','quantity','price','total', 'date', 'v_id','remarks' );
     validate_fields($req_fields);
         if(empty($errors)){
           $p_id      = $db->escape((int)$_POST['s_id']);
           $s_qty     = $db->escape((int)$_POST['quantity']);
+          $s_v_id     = $db->escape((int)$_POST['v_id']);
           $s_total   = $db->escape($_POST['total']);
+          $s_remarks     = $db->escape((int)$_POST['remarks']);
           $date      = $db->escape($_POST['date']);
           $s_date    = make_date();
 
           $sql  = "INSERT INTO sales (";
-          $sql .= " product_id,qty,price,date";
+          $sql .= " product_id,vendor_id,qty,price,remarks,date";
           $sql .= ") VALUES (";
-          $sql .= "'{$p_id}','{$s_qty}','{$s_total}','{$s_date}'";
+          $sql .= "'{$p_id}','{$s_v_id}','{$s_qty}','{$s_total}','{$s_remarks}','{$s_date}' ";
           $sql .= ")";
 
                 if($db->query($sql)){
@@ -70,9 +72,11 @@
                     <table class="table table-bordered">
                         <thead>
                             <th> Item </th>
+                            <th> Vendor </th>
                             <th> Price </th>
                             <th> Qty </th>
                             <th> Total </th>
+                            <th> Remarks </th>
                             <th> Date</th>
                             <th> Action</th>
                         </thead>
