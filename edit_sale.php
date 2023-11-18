@@ -5,6 +5,7 @@
    page_require_level(3);
 ?>
 <?php
+$all_vendors = find_all('vendor');
 $sale = find_by_id('sales',(int)$_GET['id']);
 if(!$sale){
   $session->msg("d","Missing product id.");
@@ -20,12 +21,15 @@ if(!$sale){
         if(empty($errors)){
           $p_id      = $db->escape((int)$product['id']);
           $s_qty     = $db->escape((int)$_POST['quantity']);
+          $s_v_id     = $db->escape((int)$_POST['vendor_id']);
           $s_total   = $db->escape($_POST['total']);
+          $s_total   = $db->escape($_POST['remarks']);
           $date      = $db->escape($_POST['date']);
+          $s_rem      = $db->escape($_POST['remarks']);
           $s_date    = date("Y-m-d", strtotime($date));
 
           $sql  = "UPDATE sales SET";
-          $sql .= " product_id= '{$p_id}',qty={$s_qty},price='{$s_total}',date='{$s_date}'";
+          $sql .= " product_id= '{$p_id}',vendor_id= '{$s_v_id}',qty={$s_qty},price='{$s_total}',remarks='{$s_rem}',date='{$s_date}'";
           $sql .= " WHERE id ='{$sale['id']}'";
           $result = $db->query($sql);
           if( $result && $db->affected_rows() === 1){
@@ -66,12 +70,13 @@ if(!$sale){
                 <table class="table table-bordered">
                     <thead>
                         <th> Product title </th>
-                        <th> Vendor </th>
+                        <th style="width: 15%;"> Vendor </th>
                         <th> Qty </th>
                         <th> Price </th>
                         <th> Total </th>
-                        <th> Date</th>
                         <th> Remarks</th>
+                        <th> Date</th>
+
                         <th> Action</th>
                     </thead>
                     <tbody id="product_info">
@@ -83,8 +88,13 @@ if(!$sale){
                                     <div id="result" class="list-group"></div>
                                 </td>
                                 <td id="vendor">
-                                    <input type="text" class="form-control" id="sug_input" name="title"
-                                        value="<?php echo remove_junk($sale['vendor']); ?>">
+                                    <select class="form-control" name="vendor_id">
+                                        <?php  foreach ($all_vendors as $ven): ?>
+                                        <option value="<?php echo (int)$ven['id']; ?>"
+                                            <?php if($ven['id'] === $ven['id']): echo "selected"; endif; ?>>
+                                            <?php echo remove_junk($ven['vendor_name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                     <div id="result" class="list-group"></div>
                                 </td>
                                 <td id="s_price">
@@ -106,7 +116,7 @@ if(!$sale){
                                 </td>
 
                                 <td id="s_date">
-                                    <input type="date" class="form-control datepicker" name="date" data-date-format=""
+                                    <input type="date" class="form-control " name="date" data-date-format=""
                                         value="<?php echo remove_junk($sale['date']); ?>">
                                 </td>
                                 <td>

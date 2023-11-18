@@ -240,12 +240,12 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_stocks_table(){
      global $db;
-     $sql  =" SELECT s.id, s.product_id, s.quantity, s.date, p.name, p.vendor_name";
-    $sql  .=" AS categorie,m.file_name AS image";
-    $sql  .=" FROM products p";
-    $sql  .=" LEFT JOIN categories c ON c.id = p.categorie_id";
-    $sql  .=" LEFT JOIN media m ON m.id = p.media_id";
-    $sql  .=" ORDER BY p.id ASC";
+     $sql  =" SELECT s.id, s.product_id, s.quantity, s.date, p.name";
+    $sql  .=" as product_name, c.name AS category, p.stock_code AS code ";
+    $sql  .=" from stocks s ";
+    $sql  .=" INNER JOIN products p ON p.id = s.product_id";
+    $sql  .=" INNER JOIN categories c ON c.id = s.id";
+    $sql  .=" ORDER BY s.id ASC";
     return find_by_sql($sql);
 
    }

@@ -22,6 +22,9 @@ $sales = join_sales_table();
                     <span>All Sales</span>
                 </strong>
                 <div class="pull-right">
+                    <a href="phpexcel.php" class="btn btn-primary">Export to XLSX</a>
+                </div>
+                <div class="pull-right" style="margin-right: 1%;">
                     <a href="add_sale.php" class="btn btn-primary">Add sale</a>
                 </div>
             </div>

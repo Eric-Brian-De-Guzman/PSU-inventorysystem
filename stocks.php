@@ -14,7 +14,7 @@
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 <div class="pull-right">
-                    <a href="add_product.php" class="btn btn-primary">Add New</a>
+                    <a href="add_stocks.php" class="btn btn-primary">Add New</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -23,12 +23,11 @@
                         <tr>
                             <th class="text-center" style="width: 50px;">#</th>
                             <th class="text-center" style="width: 20%;"> Stock Code </th>
-                            <th class="text-center" style="width: 10%;"> Product Name </th>
-                            <th class="text-center" style="width: 10%;"> Vendor</th>
-                            <th class="text-center" style="width: 10%;"> UOI</th>
+                            <th class="text-center" style="width: 30%;"> Product Name </th>
                             <th class="text-center" style="width: 10%;"> Quantity</th>
                             <th class="text-center" style="width: 10%;"> Category</th>
                             <th class="text-center" style="width: 10%;"> Updated at</th>
+                            <th class="text-center" style="width: 10%;"> Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,12 +35,10 @@
                         <tr>
                             <td class="text-center"><?php echo count_id();?></td>
 
-                            <td class="text-center"> <?php echo remove_junk($stock['stock_code']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['name']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['vendor_name']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['UOI']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['code']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['product_name']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($stock['quantity']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['categorie']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['category']); ?></td>
 
                             <td class="text-center"> <?php echo read_date($stock['date']); ?></td>
                             <td class="text-center">
