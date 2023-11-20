@@ -1,6 +1,5 @@
 <?php
-require '../InventorySystem_PHP/PhpSpreadsheet-master/src/PhpSpreadsheet/Spreadsheet.php';
-require '../InventorySystem_PHP/PhpSpreadsheet-master/src/PhpSpreadsheet/Writer/Xlsx.php';
+require 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -27,7 +26,7 @@ $query = "
 ";
 
 $result = $conn->query($query);
-
+$objPHPExcel = new Spreadsheet;
 $rowCount = 1;
 while ($row = $result->fetch_assoc()) {
     $objPHPExcel->getActiveSheet()->setCellValue('A'.$rowCount, $row['Product_Name']);
