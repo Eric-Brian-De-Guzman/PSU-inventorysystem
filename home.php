@@ -12,7 +12,7 @@
         <div class="panel">
             <div class="jumbotron text-center">
                 <h1>Welcome User
-                    <hr> PSU Inventory Management System
+                    <hr> PSU Management System
                 </h1>
                 <p>Browes around to find out the pages that you can access!</p>
             </div>

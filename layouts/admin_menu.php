@@ -46,11 +46,11 @@
     <li>
         <a href="#" class="submenu-toggle">
             <i class="glyphicon glyphicon-credit-card"></i>
-            <span>Sales</span>
+            <span>Purchases</span>
         </a>
         <ul class="nav submenu">
-            <li><a href="sales.php">Manage Sales</a> </li>
-            <li><a href="add_sale.php">Add Sale</a> </li>
+            <li><a href="sales.php">Manage Purchases</a> </li>
+            <li><a href="add_sale.php">Add Purchase</a> </li>
         </ul>
     </li>
     <li>
@@ -66,12 +66,12 @@
     <li>
         <a href="#" class="submenu-toggle">
             <i class="glyphicon glyphicon-duplicate"></i>
-            <span>Sales Report</span>
+            <span>Purchases Report</span>
         </a>
         <ul class="nav submenu">
-            <li><a href="sales_report.php">Sales by dates </a></li>
-            <li><a href="monthly_sales.php">Monthly sales</a></li>
-            <li><a href="daily_sales.php">Daily sales</a> </li>
+            <li><a href="sales_report.php">Purchases by dates </a></li>
+            <li><a href="monthly_sales.php">Monthly Purchases</a></li>
+            <li><a href="daily_sales.php">Daily Purchases</a> </li>
         </ul>
     </li>
 </ul>

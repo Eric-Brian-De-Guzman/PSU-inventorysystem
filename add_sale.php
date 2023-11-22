@@ -27,7 +27,7 @@ $s_c_id     = $db->escape((int)$_POST['c_id']);
 
                 if($db->query($sql)){
                   update_product_qty($s_qty,$p_id);
-                  $session->msg('s',"Sale added. ");
+                  $session->msg('s',"Purchase added. ");
                   redirect('add_sale.php', false);
                 } else {
                   $session->msg('d',' Sorry failed to add!');
@@ -65,7 +65,7 @@ $s_c_id     = $db->escape((int)$_POST['c_id']);
             <div class="panel-heading clearfix">
                 <strong>
                     <span class="glyphicon glyphicon-th"></span>
-                    <span>Sale Edit</span>
+                    <span>Purchase Edit</span>
                 </strong>
             </div>
             <div class="panel-body">

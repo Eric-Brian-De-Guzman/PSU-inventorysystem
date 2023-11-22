@@ -34,7 +34,7 @@ if(!$sale){
           $result = $db->query($sql);
           if( $result && $db->affected_rows() === 1){
                     update_product_qty($s_qty,$p_id);
-                    $session->msg('s',"Sale updated.");
+                    $session->msg('s',"Purchase updated.");
                     redirect('edit_sale.php?id='.$sale['id'], false);
                   } else {
                     $session->msg('d',' Sorry failed to updated!');

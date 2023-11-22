@@ -228,8 +228,8 @@ function tableExists($table){
      $sql  =" SELECT s.id,s.qty,s.price,s.remarks,s.date,p.name,v.vendor_name";
      $sql  .=" AS vendor";
     $sql  .=" FROM sales s";
-    $sql  .=" INNER JOIN products p ON p.id = s.id";
-    $sql  .=" INNER JOIN vendor v ON v.id = s.vendor_id";
+    $sql  .=" LEFT JOIN products p ON p.id = s.id";
+    $sql  .=" LEFT JOIN vendor v ON v.id = s.vendor_id";
     $sql  .=" ORDER BY s.id ASC";
     return find_by_sql($sql);
 

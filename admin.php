@@ -71,7 +71,7 @@
                 </div>
                 <div class="panel-value pull-right">
                     <h2 class="margin-top"> <?php  echo $c_sale['total']; ?></h2>
-                    <p class="text-muted">Sales</p>
+                    <p class="text-muted">Purchases</p>
                 </div>
             </div>
         </div>
@@ -114,7 +114,7 @@
             <div class="panel-heading">
                 <strong>
                     <span class="glyphicon glyphicon-th"></span>
-                    <span>LATEST SALES</span>
+                    <span>LATEST PURCHASES</span>
                 </strong>
             </div>
             <div class="panel-body">
@@ -124,7 +124,7 @@
                             <th class="text-center" style="width: 50px;">#</th>
                             <th>Product Name</th>
                             <th>Date</th>
-                            <th>Total Sale</th>
+                            <th>Total Purchases</th>
                         </tr>
                     </thead>
                     <tbody>

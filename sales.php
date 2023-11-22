@@ -1,5 +1,5 @@
 <?php
-  $page_title = 'All sale';
+  $page_title = 'All Purchases';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
    page_require_level(2);
@@ -19,13 +19,13 @@ $sales = join_sales_table();
             <div class="panel-heading clearfix">
                 <strong>
                     <span class="glyphicon glyphicon-th"></span>
-                    <span>All Sales</span>
+                    <span>All PURCHASES</span>
                 </strong>
                 <div class="pull-right">
                     <a href="phpexcel.php" class="btn btn-primary">Export to XLSX</a>
                 </div>
                 <div class="pull-right" style="margin-right: 1%;">
-                    <a href="add_sale.php" class="btn btn-primary">Add sale</a>
+                    <a href="add_sale.php" class="btn btn-primary">Add Purchase</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -46,7 +46,7 @@ $sales = join_sales_table();
                         <?php foreach ($sales as $sale):?>
                         <tr>
                             <td class="text-center"><?php echo count_id();?></td>
-                            <td><?php echo remove_junk($sale['name']); ?></td>
+                            <td style="width: 30%;"><?php echo remove_junk($sale['name']); ?></td>
                             <td class="text-center"><?php echo $sale['vendor']; ?></td>
                             <td class="text-center"><?php echo (int)$sale['qty']; ?></td>
                             <td class="text-center"><?php echo remove_junk($sale['price']); ?></td>
