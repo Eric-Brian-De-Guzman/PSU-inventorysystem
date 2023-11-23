@@ -66,32 +66,11 @@ while ($category = $categoryResult->fetch_assoc()) {
     $sheet = $spreadsheet->createSheet();
     $sheet->setTitle($categoryName);
 
-    // Fetch stock data for the current category
-    $stockQuery = "SELECT p.stock_code, s.product_id, s.category_id, c.name, s.quantity, s.date 
-        FROM stocks s
-        LEFT JOIN products p ON p.id = s.product_id
-        LEFT JOIN categories c ON c.id = s.category_id
-        WHERE c.id = $categoryId";
-
-    $stockResult = $conn->query($stockQuery);
-    $stockData = $stockResult->fetch_all(MYSQLI_ASSOC);
-
-    // Set column headers for the stock sheet
-    $stockSheetHeaders = ['Stock ID', 'Product ID', 'Category ID', 'Category Name', 'Quantity', 'Date'];
-    $sheet->fromArray([$stockSheetHeaders], null, 'A1');
-
-    // Add stock data rows to the stock sheet
-    $stockRow = 2;
-    foreach ($stockData as $stock) {
-        $sheet->fromArray([$stock['stock_code'], $stock['product_id'], $stock['category_id'], $stock['name'], $stock['quantity'], $stock['date']], null, 'A' . $stockRow);
-        $stockRow++;
-    }
-
     // Query to retrieve sales data for each category
     $salesQuery = "
         SELECT v.vendor_name as Vendor, s.id AS ID, p.name as Product_Name, s.qty AS Quantity, s.price as Price, s.price * s.qty as Total, s.remarks as Remarks, s.date
-        FROM vendor v
-        LEFT JOIN sales s ON v.id = s.vendor_id
+        FROM sales s
+        LEFT JOIN vendor v ON v.id = s.vendor_id
         LEFT JOIN products p ON p.id = s.product_id
         WHERE s.category_id = $categoryId
         ORDER BY MONTH(s.date), v.vendor_name DESC, p.name ASC, s.id ASC
@@ -100,42 +79,68 @@ while ($category = $categoryResult->fetch_assoc()) {
     $salesResult = $conn->query($salesQuery);
 
     $rowCount = 0;
+    $Columncount = 0;
     $currentVendor = null;
     $currentMonth = null;
-
+    $previousVendor = null;
+    $previousMonth = null;
+    
     while ($row = $salesResult->fetch_assoc()) {
+        echo($row);
         $saleMonth = date('F Y', strtotime($row['date']));
 
-        if ($row['Vendor'] != $currentVendor || $saleMonth != $currentMonth) {
-            $currentVendor = $row['Vendor'];
-            $currentMonth = $saleMonth;
+        if ($row['Vendor'] != $previousVendor || $saleMonth != $previousMonth) {
+            $previousVendor = $row['Vendor'];
+            $previousMonth = $saleMonth;
+            // char A = 65 ASCII code
+            // char H = 72 ASCII code
+            // char D = 68
+            $startColumn = $sheet->getCell('A1')->getValue();
+            echo($startColumn);
+            $endColumn = chr(72 + $Columncount);
+            $vendorEndColumn = chr(68 + $Columncount);
+            
+            
 
-            $startColumn = 'A';
-            $endColumn = chr(ord($startColumn) + 5);
-            $sheet->fromArray([$row['Vendor'] . ' - ' . $saleMonth], null, $startColumn . '1');
-
-            // Add headers in the next columns
-            $sheet->setCellValue($startColumn . '2', 'Product_Name');
-            $sheet->setCellValue(chr(ord($startColumn) + 1) . '2', 'Quantity');
-            $sheet->setCellValue(chr(ord($startColumn) + 2) . '2', 'Price');
-            $sheet->setCellValue(chr(ord($startColumn) + 3) . '2', 'Total');
-            $sheet->setCellValue(chr(ord($startColumn) + 4) . '2', 'Remarks');
-            $sheet->setCellValue(chr(ord($startColumn) + 5) . '2', 'Date');
-            $rowCount = 3;
+            if ($previousVendor != null || $previousVendor != $row['Vendor']) {
+               // Add headers in the next columns only if there's a vendor
+               if ($Columncount < 4) {
+                   // Limit to 4 columns for saleMonth
+                   $endColumn = chr(72 + ($Columncount  - 4));
+               }
+                $sheet->mergeCells($startColumn . '1:' . $endColumn . '1');
+                $style = $sheet->getStyle($startColumn . '1');
+                $alignment = $style->getAlignment();
+                $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $style2 = $sheet->getStyle($startColumn . '2');
+                $alignment2 = $style2->getAlignment();
+                $alignment2->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->setCellValue($startColumn . '1', $saleMonth);
+                $sheet->mergeCells($startColumn . '2:' . $vendorEndColumn . '2');
+                $sheet->setCellValue($startColumn . '2', $row['Vendor']);
+                $sheet->setCellValue(chr(ord($startColumn)) . '3', 'Quantity');
+                $sheet->setCellValue(chr(ord($startColumn) + 1) . '3', 'Price');
+                $sheet->setCellValue(chr(ord($startColumn) + 2) . '3', 'Total');
+                $sheet->setCellValue(chr(ord($startColumn) + 3) . '3', 'Remarks');
+                $rowCount = 4;
+            }
         }
 
-        $sheet->setCellValue($startColumn . $rowCount, $row['Product_Name']);
-        $sheet->setCellValue(chr(ord($startColumn) + 1) . $rowCount, $row['Quantity']);
-        $sheet->setCellValue(chr(ord($startColumn) + 2) . $rowCount, $row['Price']);
-        $sheet->setCellValue(chr(ord($startColumn) + 3) . $rowCount, $row['Total']);
-        $sheet->setCellValue(chr(ord($startColumn) + 4) . $rowCount, $row['Remarks']);
-        $sheet->setCellValue(chr(ord($startColumn) + 5) . $rowCount, date('Y-m-d', strtotime($row['date'])));
-        $rowCount++;
+        if ($previousVendor != null) {
+            // Add data only if there's a vendor
+            $sheet->setCellValue($startColumn . $rowCount, $row['Quantity']);
+            $sheet->setCellValue(chr(ord($startColumn) + 1) . $rowCount, $row['Price']);
+            $sheet->setCellValue(chr(ord($startColumn) + 2) . $rowCount, $row['Total']);
+            $sheet->setCellValue(chr(ord($startColumn) + 3) . $rowCount, $row['Remarks']);
+            $rowCount++;
+        }
+
+        $Columncount += 4;
     }
-}
+ }
 
 $timestamp = date('Ymd_His');
-$filename = 'inventory_' . $timestamp . '.xlsx';
+$filename = 'sales_' . $timestamp . '.xlsx';
 $objWriter = new Xlsx($spreadsheet);
 $objWriter->save($filename);
 
@@ -143,6 +148,9 @@ header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetm
 header('Content-Disposition: attachment;filename="' . $filename . '"');
 header('Cache-Control: max-age=0');
 
+
+// Redirect back to the same page
 header('Location: sales.php');
 exit;
+
 ?>
