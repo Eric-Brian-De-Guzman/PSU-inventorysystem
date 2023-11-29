@@ -33,6 +33,7 @@ $sales = join_sales_table();
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 50px;">#</th>
+                            <th class="text-center" style="width: 15%;"> Stock Code</th>
                             <th> Product name </th>
                             <th class="text-center" style="width: 15%;"> Vendor Name</th>
                             <th class="text-center" style="width: 15%;"> Quantity</th>
@@ -46,19 +47,20 @@ $sales = join_sales_table();
                         <?php foreach ($sales as $sale):?>
                         <tr>
                             <td class="text-center"><?php echo count_id();?></td>
-                            <td style="width: 30%;"><?php echo remove_junk($sale['name']); ?></td>
-                            <td class="text-center"><?php echo $sale['vendor']; ?></td>
-                            <td class="text-center"><?php echo (int)$sale['qty']; ?></td>
-                            <td class="text-center"><?php echo remove_junk($sale['price']); ?></td>
-                            <td class="text-center"><?php echo $sale['remarks']; ?></td>
-                            <td class="text-center"><?php echo $sale['date']; ?></td>
+                            <td style="width: 30%;"><?php echo remove_junk($sale['Stock_Number']); ?></td>
+                            <td style="width: 30%;"><?php echo remove_junk($sale['Product_Name']); ?></td>
+                            <td class="text-center"><?php echo $sale['Vendor']; ?></td>
+                            <td class="text-center"><?php echo (int)$sale['Quantity']; ?></td>
+                            <td class="text-center"><?php echo remove_junk($sale['Price']); ?></td>
+                            <td class="text-center"><?php echo $sale['Remarks']; ?></td>
+                            <td class="text-center"><?php echo $sale['Date']; ?></td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="edit_sale.php?id=<?php echo (int)$sale['id'];?>"
+                                    <a href="edit_sale.php?id=<?php echo (int)$sale['ID'];?>"
                                         class="btn btn-warning btn-xs" title="Edit" data-toggle="tooltip">
                                         <span class="glyphicon glyphicon-edit"></span>
                                     </a>
-                                    <a href="delete_sale.php?id=<?php echo (int)$sale['id'];?>"
+                                    <a href="delete_sale.php?id=<?php echo (int)$sale['ID'];?>"
                                         class="btn btn-danger btn-xs" title="Delete" data-toggle="tooltip">
                                         <span class="glyphicon glyphicon-trash"></span>
                                     </a>

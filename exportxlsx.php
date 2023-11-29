@@ -23,14 +23,19 @@ $spreadsheet = new Spreadsheet;
 $firstSheet = $spreadsheet->getActiveSheet();
 $firstSheet->setTitle('Overall Summary');
 
-// Set column headers for the first sheet
+// Set column headers for the first sheet *overall summary*
 $firstSheetHeaders = ['Category ID', 'Category Name', 'Total Sales'];
 $firstSheet->fromArray([$firstSheetHeaders], null, 'A1');
 
-// Fetch overall summary data for all categories
+// Get the year parameter from the URL, default to the current year if not provided
+$year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
+
+// Fetch overall summary data for all categories for the specified year
 $sql = "SELECT 
     c.id AS CategoryID,
     c.name AS CategoryName,
+    -- s.id AS ID,
+    -- COUNT(s.id) as NumberOfSales,
     SUM(s.qty * s.price) AS TotalSales
 FROM 
     sales s
@@ -51,12 +56,17 @@ foreach ($categorySummaries as $categorySummary) {
     $firstSheet->fromArray([$categorySummary['CategoryID'], $categorySummary['CategoryName'], $categorySummary['TotalSales']], null, 'A' . $row);
     $totalOverallSales += $categorySummary['TotalSales']; // Accumulate the total sales
     $row++;
+    // $totalProducts = $categorySummary['NumberOfSales'];
 }
 
 // Display the grand total in a designated cell
 $grandTotalRow = $row + 1; // Adjust the row to leave space for headers
 $firstSheet->setCellValue('A' . $grandTotalRow, 'Grand Total');
 $firstSheet->setCellValue('C' . $grandTotalRow, $totalOverallSales);
+$firstSheet->setCellValue('I'.  6, 'BO '. $year .' trend');
+$firstSheet->setCellValue('I'.  7, 'BO '. $year .' (after adjustment)');
+$firstSheet->setCellValue('J'.  7, $totalOverallSales);
+$firstSheet->setCellValue('K'.  7, ($totalOverallSales/7));
 
 // Reset the pointer to the beginning of the result set
 $categoryResult->data_seek(0);
@@ -69,76 +79,128 @@ while ($category = $categoryResult->fetch_assoc()) {
     $sheet = $spreadsheet->createSheet();
     $sheet->setTitle($categoryName);
 
-    // Query to retrieve sales data for each category
-    $salesQuery = "
-        SELECT v.vendor_name as Vendor, s.id AS ID,p.stock_code as Stock_Code , p.name as Product_Name, s.qty AS Quantity, s.price as Price, s.price * s.qty as Total, s.remarks as Remarks, s.date
-        FROM sales s
-        RIGHT JOIN vendor v ON v.id = s.vendor_id
-        RIGHT JOIN products p ON p.id = s.product_id
-        WHERE s.category_id = $categoryId
-        ORDER BY MONTH(s.date), v.vendor_name DESC, p.stock_code ASC, p.name ASC, s.id ASC
-    ";
-    
-    $salesResult = $conn->query($salesQuery);
 
-    $rowCount = 0;
+    // Query to retrieve sales data for each category
+   $stocksQuery = "
+    SELECT p.stock_code as Stock_Number, p.id as ID, p.name as Product_Name
+    FROM products p
+    LEFT JOIN
+    categories c on c.id = p.categorie_id
+    WHERE p.categorie_id = $categoryId
+   
+"; 
+    $stocksResult = $conn->query($stocksQuery);
+    $rowStock = 0;
+    $stocksResult->data_seek(0);
+while ($rows = $stocksResult->fetch_assoc()) {
+            $sheet->setCellValue([1,3],'Stock Code');
+        $sheet->setCellValue([2,3],'Product Name');
+         $sheet->setCellValue([1 , $rowStock + 4], $rows['Stock_Number']);
+            $sheet->setCellValue([2 , $rowStock + 4], $rows['Product_Name']);
+            $rowStock++;
+    $stockCode = $rows['ID'];
+
+
+
+$salesQuery= "
+    SELECT  v.vendor_name as Vendor, s.stock_code as Stock_Number, s.id AS ID,
+            p.name as Product_Name, s.qty AS Quantity, s.price as Price, s.price * s.qty as Total,
+            s.remarks as Remarks, s.date, s.product_id,
+            CONCAT('Q', QUARTER(s.date), ' ', YEAR(s.date)) as Quarter
+            FROM sales s
+            LEFT JOIN vendor v ON v.id = s.vendor_id
+            LEFT JOIN products p ON p.id = s.product_id
+            WHERE s.product_id = $stockCode
+            ORDER BY Quarter DESC, v.vendor_name DESC
+";
+    $salesResult = $conn->query($salesQuery);
     $Columncount = 0;
-    $currentVendor = null;
-    $currentMonth = null;
     $previousVendor = null;
     $previousMonth = null;
-    $vendorCount = 0;
     $startColumn = 6;
-    $endColumn = 13;
+    $endColumn = 9;
     $vendorEndColumn = 9;
-    $stockCodeRow = 4; 
-    while ($row = $salesResult->fetch_assoc()) {
-        $saleMonth = date('F Y', strtotime($row['date']));
-        $sheet->setCellValue([1,3],'Stock Code');
-        $sheet->setCellValue([2,3],'Product Name');
-        if ($row['Vendor'] != $previousVendor || $saleMonth != $previousMonth) {
-            $previousVendor = $row['Vendor'];
-            $previousMonth = $saleMonth;
 
-        $startColumn = $startColumn + $Columncount;
-        $endColumn = $endColumn + $Columncount;
-        $vendorEndColumn = $vendorEndColumn + $Columncount;
-         
+    while ($row = $salesResult->fetch_assoc()) {
+        $saleQuarter = $row['Quarter'];
+        if ( $row['Vendor'] != $previousVendor  || $saleQuarter != $previousMonth) {
+            
+            $previousVendor = $row['Vendor'];
+            $previousMonth = $saleQuarter;
+            
+            $startColumn = $startColumn + $Columncount;
+            $endColumn = $endColumn + $Columncount;
+            $vendorEndColumn = $vendorEndColumn + $Columncount;
+            
          if ($previousVendor != null) {
-         if ($Columncount < 4) {
-                    // Limit to 4 columns for saleMonth
-                    $endColumn = $endColumn - 4;
-                }
-                    $endColumn = max( $endColumn,$vendorEndColumn);
-                    $style = $sheet->getStyle([$startColumn, '1']);
+            // center at merge yung cell F:1-I1 at F:2-I2
+            $style = $sheet->getStyle([$startColumn, '1']);
             $alignment = $style->getAlignment();
             $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->mergeCells([$startColumn , '1' , $endColumn , '1']);
-            $sheet->setCellValue([$startColumn , '1' , $endColumn , '1'], $saleMonth);
-            
-
+            $sheet->setCellValue([$startColumn , '1' , $endColumn , '1'], $saleQuarter);
             $style = $sheet->getStyle([$startColumn , '2']);
             $alignment = $style->getAlignment();
             $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->mergeCells([$startColumn , '2' , $vendorEndColumn , '2']);
             $sheet->setCellValue([$startColumn , '2'], $row['Vendor']);
+            $style = $sheet->getStyle([3, 2]);
+            $alignment = $style->getAlignment();
+            $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->mergeCells([3 , 2 , 5 , 2]);
+            $sheet->setCellValue([3 , 2 , 5 , 2], 'STOCKS');
+            $sheet->setCellValue([3,3],'On Hand');
+            $sheet->setCellValue([4,3],'Usage');
+            $sheet->setCellValue([5,3],'Required Quantity');
+            
             $sheet->setCellValue([$startColumn , '3'], 'Quantity');
             $sheet->setCellValue([$startColumn + 1 , '3'], 'Price');
             $sheet->setCellValue([$startColumn + 2 , '3'], 'Total');
             $sheet->setCellValue([$startColumn + 3 , '3'], 'Remarks');
-            $rowCount = 4;
-    }}if ($previousVendor != null) {
-            $sheet->setCellValue([$startColumn , $rowCount], $row['Quantity']);
-            $sheet->setCellValue([$startColumn + 1 , $rowCount], $row['Price']);
-            $sheet->setCellValue([$startColumn + 2 , $rowCount], $row['Total']);
-            $sheet->setCellValue([$startColumn + 3 , $rowCount], $row['Remarks']);
-            $rowCount++;
-            $Columncount =+ 4 ;
+
+    }}
+         if ($previousVendor != null) {
+            $sheet->setCellValue([$startColumn , $rowCount+4], $row['Quantity']);
+            $sheet->setCellValue([$startColumn + 1 , $rowCount+4], $row['Price']);
+            $sheet->setCellValue([$startColumn + 2 , $rowCount+4], $row['Total']);
+            $sheet->setCellValue([$startColumn + 3 , $rowCount+4], $row['Remarks']);
+            $Columncount =+ 4;
+            
 }
-}}
+
+}
+$rowCount++;
+}
+$highestColumn = $sheet->getHighestColumn();
+$columnIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+$s4sheet = $sheet->getCell('S4'); //current price of the product
+$S4 = $s4sheet->getValue();
+$g4sheet = $sheet->getCell('G4'); //previous price of the product last quarter with the same vendor
+$G4 = $g4sheet->getValue();
+$r4sheet = $sheet->getCell('R4'); //current quantity of the product
+$R4 = $r4sheet->getValue();
+$negotiatedPrice = ($S4 - $G4)*$R4;
+$sheet->setCellValue([$columnIndex + 1, 3],'Negotiated Cost Price');
+$sheet->setCellValue([$columnIndex + 1, 4],$negotiatedPrice);
+
+
+$highestColumn = $sheet->getHighestColumn();
+$columnIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+$s4sheet = $sheet->getCell('S4'); //
+$S4 = $s4sheet->getValue();
+$f4sheet = $sheet->getCell('F4');
+$F4 = $g4sheet->getValue();
+$r4sheet = $sheet->getCell('R4');
+$R4 = $r4sheet->getValue();
+$negotiatedPrice2 = ($R4 - $F4)*$S4;
+$sheet->setCellValue([$columnIndex + 1, 3],'Adjusted Quantity');
+$sheet->setCellValue([$columnIndex + 1, 4],$negotiatedPrice2);
+}
+
+
 
 $timestamp = date('Ymd_His');
-$filename = 'sales_' . $timestamp . '.xlsx';
+$filename = 'sales_' . $year . '_' . $timestamp . '.xlsx';
 $objWriter = new Xlsx($spreadsheet);
 $objWriter->save($filename);
 

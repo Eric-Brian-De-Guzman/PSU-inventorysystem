@@ -7,22 +7,23 @@
 <?php
 
   if(isset($_POST['add_sale'])){
-    $req_fields = array('s_id','quantity','price', 'date', 'v_id','remarks' );
+    $req_fields = array('s_id','quantity','price','stock_code', 'date', 'v_id');
     validate_fields($req_fields);
         if(empty($errors)){
           $p_id      = $db->escape((int)$_POST['s_id']);
+          $s_code     = $db->escape($_POST['stock_code']);
           $s_qty     = $db->escape((int)$_POST['quantity']);
-$s_price     = $db->escape((int)$_POST['price']);
-$s_c_id     = $db->escape((int)$_POST['c_id']);
-          $s_v_id     = $db->escape((int)$_POST['v_id']);
-          $s_remarks     = $db->escape($_POST['remarks']);
+         $s_price     = $db->escape((int)$_POST['price']);
+        $s_c_id     = $db->escape((int)$_POST['c_id']);
+        $s_v_id     = $db->escape((int)$_POST['v_id']);
+          
           $date      = $db->escape($_POST['date']);
           
 
           $sql  = "INSERT INTO sales (";
-          $sql .= " product_id,category_id,vendor_id,qty,price,remarks,date";
+          $sql .= " product_id, stock_code ,category_id,vendor_id,qty,price,remarks,date";
           $sql .= ") VALUES (";
-          $sql .= "'{$p_id}','{$s_c_id}','{$s_v_id}','{$s_qty}','{$s_price}','{$s_remarks}','{$date}' ";
+          $sql .= "'{$p_id}','{$s_code}','{$s_c_id}','{$s_v_id}','{$s_qty}','{$s_price}',remarks,'{$date}' ";
           $sql .= ")";
 
                 if($db->query($sql)){
@@ -76,6 +77,7 @@ $s_c_id     = $db->escape((int)$_POST['c_id']);
                             <th> Vendor </th>
                             <th> Price </th>
                             <th> Qty </th>
+                            <th> Stock Code </th>
                             <th> Category </th>
                             <th> Total </th>
                             <th> Remarks </th>

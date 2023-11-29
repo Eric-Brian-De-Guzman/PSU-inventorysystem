@@ -225,11 +225,13 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_sales_table(){
      global $db;
-     $sql  =" SELECT s.id,s.qty,s.price,s.remarks,s.date,p.name,v.vendor_name";
-     $sql  .=" AS vendor";
+    $sql  ="SELECT v.vendor_name as Vendor, s.stock_code as Stock_Number, s.id AS ID, p.stock_code as Stock_Code,";
+    $sql  .=" p.name as Product_Name, s.qty AS Quantity, s.price as Price, s.price * s.qty as Total,";
+    $sql  .=" s.remarks as Remarks, s.date as Date";
     $sql  .=" FROM sales s";
-    $sql  .=" LEFT JOIN products p ON p.id = s.id";
     $sql  .=" LEFT JOIN vendor v ON v.id = s.vendor_id";
+    $sql  .=" LEFT JOIN products p ON p.id = s.product_id";
+    $sql  .=" LEFT JOIN stocks t ON t.id = s.stock_code";
     $sql  .=" ORDER BY s.id ASC";
     return find_by_sql($sql);
 

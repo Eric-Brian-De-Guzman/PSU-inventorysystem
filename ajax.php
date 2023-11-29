@@ -51,11 +51,13 @@ $html .= "</select>";
 
           $html  .= "</td>";
           $html  .= "<td>";
-
           $html  .= "<input type=\"text\" class=\"form-control\" name=\"price\" value=\"{$result['sale_price']}\">";
           $html  .= "</td>";
           $html .= "<td id=\"s_qty\">";
-          $html .= "<input type=\"text\" class=\"form-control\" name=\"quantity\" value=\"1\">";
+          $html .= "<input type=\"text\" class=\"form-control\" name=\"quantity\" value=\"{$result['quantity']}\">";
+          $html  .= "</td>";
+          $html  .= "<td>";
+          $html  .= "<input type=\"text\" class=\"form-control\" readonly name=\"stock_code\" value=\"{$result['stock_code']}\">";
           $html  .= "</td>";
           $html  .= "<td>";
           $html  .= "<input type=\"text\" class=\"form-control\" readonly name=\"c_id\" value=\"{$result['categorie_id']}\">";
@@ -67,7 +69,7 @@ $html .= "</select>";
           $html  .= "<input type=\"text\" class=\"form-control\" name=\"remarks\" placeholder=\"Remarks\">";
           $html  .= "</td>";
           $html  .= "<td>";
-          $html  .= "<input type=\"date\" class=\"form-control datePicker\" name=\"date\" data-date data-date-format=\"yyyy-mm-dd\">";
+          $html  .= "<input type=\"date\" class=\"form-control \" name=\"date\" data-date data-date-format=\"yyyy-mm-dd\">";
           $html  .= "</td>";
           $html  .= "<td>";
           $html  .= "<button type=\"submit\" name=\"add_sale\" class=\"btn btn-primary\">Add Purchase</button>";

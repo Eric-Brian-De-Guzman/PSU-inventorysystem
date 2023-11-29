@@ -57,7 +57,7 @@ $firstSheet->setCellValue('C' . $grandTotalRow, $totalOverallSales);
 
 // Reset the pointer to the beginning of the result set
 $categoryResult->data_seek(0);
-
+//query for category and every category have their own sheet
 while ($category = $categoryResult->fetch_assoc()) {
     $categoryId = $category['CategoryID'];
     $categoryName = $category['CategoryName'];

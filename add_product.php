@@ -8,7 +8,7 @@
 ?>
 <?php
  if(isset($_POST['add_product'])){
-   $req_fields = array('product-title','product-uoi','stock-code','vendor_name','remarks','product-categorie','product-quantity','buying-price', 'saleing-price' );
+   $req_fields = array('product-title','product-uoi','stock-code','product-categorie','product-quantity','buying-price', 'saleing-price' );
    validate_fields($req_fields);
    if(empty($errors)){
      $p_name  = remove_junk($db->escape($_POST['product-title']));
@@ -25,7 +25,7 @@
      }
      $date    = make_date();
      $query  = "INSERT INTO products (";
-     $query .=" name,UOI,stock_code,vendor_name,remarks,quantity,buy_price,sale_price,categorie_id,media_id,date";
+     $query .=" name,UOI,stock_code,quantity,buy_price,sale_price,categorie_id,media_id,date";
      $query .=") VALUES (";
      $query .=" '{$p_name}','{$p_uoi}', '{$p_code}', '{$p_qty}', '{$p_buy}', '{$p_sale}', '{$p_cat}', '{$media_id}', '{$date}'";
      $query .=")";
