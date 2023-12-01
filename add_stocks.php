@@ -1,95 +1,76 @@
 <?php
-  $page_title = 'Add Stocks';
+  $page_title = 'All Product';
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(2);
-  $all_products = find_all('products');
-  $all_photo = find_all('media');
-?>
-<?php
- if(isset($_POST['add_stocks'])){
-   $req_fields = array('s_quantity' );
-   validate_fields($req_fields);
-   if(empty($errors)){
-     $s_quantity  = remove_junk($db->escape($_POST['s_quantity']));
-     $s_product_id  = remove_junk($db->escape($_POST['product_id']));
-    
-     
-    
-     $date    = make_date();
-     $query  = "INSERT INTO stocks (";
-     $query .="  product_id, quantity, date ";
-     $query .=") VALUES (";
-     $query .="  '{$s_product_id}','{$s_quantity}', '{$date}' ";
-     $query .=")";
-
-     if($db->query($query)){
-       $session->msg('s',"Stock added ");
-       redirect('add_stocks.php', false);
-     } else {
-       $session->msg('d',' Sorry failed to added!');
-       redirect('stocks.php', false);
-     }
-
-   } else{
-     $session->msg("d", $errors);
-     redirect('add_stocks.php',false);
-   }
-
- }
-
+   page_require_level(2);
+  $products = join_product_table();
 ?>
 <?php include_once('layouts/header.php'); ?>
 <div class="row">
     <div class="col-md-12">
         <?php echo display_msg($msg); ?>
     </div>
-</div>
-<div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>
-                    <span class="glyphicon glyphicon-th"></span>
-                    <span>Add Current Stock On Hand</span>
-                </strong>
+            <div class="panel-heading clearfix">
+                <div class="pull-right">
+                    <a href="add_product.php" class="btn btn-primary">Add New</a>
+                </div>
             </div>
             <div class="panel-body">
-                <div class="col-md-12">
-                    <form method="post" action="add_stocks.php" class="clearfix">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th> Photo</th>
+                            <th> Stock Code </th>
+                            <th> Product Title </th>
+                            <th class="text-center" style="width: 10%;"> Categories </th>
+                            <th class="text-center" style="width: 10%;"> UOI </th>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <select class="form-control" name="product_id">
-                                        <option value="">Select Product</option>
-                                        <?php  foreach ($all_products as $cat): ?>
-                                        <option value="<?php echo (int)$cat['id'] ?>">
-                                            <?php echo $cat['name'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                            <th class="text-center" style="width: 10%;"> In-Stock </th>
+                            <th class="text-center" style="width: 10%;"> Buying Price </th>
+                            <th class="text-center" style="width: 10%;"> Selling Price </th>
+                            <th class="text-center" style="width: 10%;"> Product Added </th>
+                            <th class="text-center" style="width: 100px;"> Actions </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($products as $product):?>
+                        <tr>
+                            <td class="text-center"><?php echo count_id();?></td>
+                            <td>
+                                <?php if($product['media_id'] === '0'): ?>
+                                <img class="img-avatar img-circle" src="uploads/products/no_image.png" alt="">
+                                <?php else: ?>
+                                <img class="img-avatar img-circle"
+                                    src="uploads/products/<?php echo $product['image']; ?>" alt="">
+                                <?php endif; ?>
+                            </td>
+                            <td> <?php echo remove_junk($product['stock_code']); ?></td>
+                            <td> <?php echo remove_junk($product['name']); ?></td>
+
+
+                            <td class="text-center"> <?php echo remove_junk($product['categorie']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($product['UOI']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($product['quantity']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($product['buy_price']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($product['sale_price']); ?></td>
+                            <td class="text-center"> <?php echo read_date($product['date']); ?></td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="adding_stocks.php?id=<?php echo (int)$product['id'];?>"
+                                        class="btn btn-info btn-xs" title="Plus" data-toggle="tooltip">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </a>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="glyphicon glyphicon-shopping-cart"></i>
-                                        </span>
-                                        <input type="number" class="form-control" name="s_quantity"
-                                            placeholder="Product Quantity">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <button type="submit" name="add_stocks" class="btn btn-danger">Add Stocks</button>
-                    </form>
-                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    </tabel>
             </div>
         </div>
     </div>
 </div>
-
 <?php include_once('layouts/footer.php'); ?>

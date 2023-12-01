@@ -24,10 +24,12 @@
                             <th class="text-center" style="width: 50px;">#</th>
                             <th class="text-center" style="width: 20%;"> Stock Code </th>
                             <th class="text-center" style="width: 30%;"> Product Name </th>
-                            <th class="text-center" style="width: 10%;"> Quantity</th>
                             <th class="text-center" style="width: 10%;"> Category</th>
-                            <th class="text-center" style="width: 10%;"> Updated at</th>
-                            <th class="text-center" style="width: 10%;"> Actions</th>
+                            <th class="text-center" style="width: 10%;"> Stock On Hand</th>
+                            <th class="text-center" style="width: 10%;"> Submitted Usage</th>
+                            <th class="text-center" style="width: 10%;"> Required Quantity</th>
+                            <th class="text-center" style="width: 10%;"> Date</th>
+                            <th class="text-center" style="width: 10%;"> Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,10 +37,12 @@
                         <tr>
                             <td class="text-center"><?php echo count_id();?></td>
 
-                            <td class="text-center"> <?php echo remove_junk($stock['code']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['stock_code']); ?></td>
                             <td class="text-center"> <?php echo remove_junk($stock['product_name']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['quantity']); ?></td>
-                            <td class="text-center"> <?php echo remove_junk($stock['category']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['name']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['stock_onhand']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['submitted_usage']); ?></td>
+                            <td class="text-center"> <?php echo remove_junk($stock['req_qty']); ?></td>
 
                             <td class="text-center"> <?php echo read_date($stock['date']); ?></td>
                             <td class="text-center">

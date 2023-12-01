@@ -24,7 +24,7 @@ $firstSheet = $spreadsheet->getActiveSheet();
 $firstSheet->setTitle('Overall Summary');
 
 // Set column headers for the first sheet *overall summary*
-$firstSheetHeaders = ['Category ID', 'Category Name', 'Total Sales'];
+$firstSheetHeaders = ['Category ID', 'Category Name', 'Total Sales','','Negotiated Cost Price','Adjusted Quantity'];
 $firstSheet->fromArray([$firstSheetHeaders], null, 'A1');
 
 // Get the year parameter from the URL, default to the current year if not provided
@@ -35,7 +35,7 @@ $sql = "SELECT
     c.id AS CategoryID,
     c.name AS CategoryName,
     -- s.id AS ID,
-    -- COUNT(s.id) as NumberOfSales,
+    COUNT(s.id) as NumberOfSales,
     SUM(s.qty * s.price) AS TotalSales
 FROM 
     sales s
@@ -54,10 +54,10 @@ $totalOverallSales = 0; // Initialize a variable to store the grand total
 
 foreach ($categorySummaries as $categorySummary) {
     $firstSheet->fromArray([$categorySummary['CategoryID'], $categorySummary['CategoryName'], $categorySummary['TotalSales']], null, 'A' . $row);
-    $totalOverallSales += $categorySummary['TotalSales']; // Accumulate the total sales
+    $totalOverallSales += $categorySummary['TotalSales'];
     $row++;
-    // $totalProducts = $categorySummary['NumberOfSales'];
 }
+$totalProducts = $categorySummary['NumberOfSales']; // Accumulate the total sales
 
 // Display the grand total in a designated cell
 $grandTotalRow = $row + 1; // Adjust the row to leave space for headers
@@ -66,7 +66,8 @@ $firstSheet->setCellValue('C' . $grandTotalRow, $totalOverallSales);
 $firstSheet->setCellValue('I'.  6, 'BO '. $year .' trend');
 $firstSheet->setCellValue('I'.  7, 'BO '. $year .' (after adjustment)');
 $firstSheet->setCellValue('J'.  7, $totalOverallSales);
-$firstSheet->setCellValue('K'.  7, ($totalOverallSales/7));
+$firstSheet->setCellValue('K'.  7, $totalOverallSales/7);
+
 
 // Reset the pointer to the beginning of the result set
 $categoryResult->data_seek(0);
@@ -94,6 +95,7 @@ while ($category = $categoryResult->fetch_assoc()) {
     $stocksResult->data_seek(0);
     $rowCount = 0;
     
+ $firstRow =2;
 while ($rows = $stocksResult->fetch_assoc()) {
             $sheet->setCellValue([1,3],'Stock Code');
         $sheet->setCellValue([2,3],'Product Name');
@@ -126,9 +128,14 @@ $salesQuery= "
     $startColumn = 7;
     $endColumn = 10;
     $vendorEndColumn = 10;
+    $pricelist = [];
+    $qtylist = [];
    
     //Sorted by Vendor and Month
+    
     while ($row = $salesResult->fetch_assoc()) {
+        $pricelist[] = $row['Price'];
+        $qtylist[] = $row['Quantity'];
         $saleQuarter = $row['Quarter'];
         if ( $row['Vendor'] != $previousVendor  || $saleQuarter != $previousMonth) {
             
@@ -139,34 +146,35 @@ $salesQuery= "
             $endColumn = $endColumn + $Columncount;
             $vendorEndColumn = $vendorEndColumn + $Columncount;
             
-         if ($previousVendor != null) {
-            // center at merge yung cell F:1-I1 at F:2-I2
-            $style = $sheet->getStyle([$startColumn, '1']);
-            $alignment = $style->getAlignment();
-            $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $sheet->mergeCells([$startColumn , '1' , $endColumn , '1']);
-            $sheet->setCellValue([$startColumn , '1' , $endColumn , '1'], $saleQuarter);
-            $style = $sheet->getStyle([$startColumn , '2']);
-            $alignment = $style->getAlignment();
-            $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $sheet->mergeCells([$startColumn , '2' , $vendorEndColumn , '2']);
-            $sheet->setCellValue([$startColumn , '2'], $row['Vendor']);
-            $style = $sheet->getStyle([3, 2]);
-            $alignment = $style->getAlignment();
-            $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $sheet->mergeCells([3 , 2 , 5 , 2]);
-            $sheet->setCellValue([3 , 2 , 5 , 2], 'STOCKS');
-            $sheet->setCellValue([3,3],'STOCK ON HAND');
-            $sheet->setCellValue([4,3],'SUBMITTED USAGE');
-            $sheet->setCellValue([5,3],'REQUIRED QUANTITY');
-            $sheet->setCellValue([6,3],'TOTAL QTY');
-            
-            $sheet->setCellValue([$startColumn , '3'], 'Quantity');
-            $sheet->setCellValue([$startColumn + 1 , '3'], 'Price');
-            $sheet->setCellValue([$startColumn + 2 , '3'], 'Total');
-            $sheet->setCellValue([$startColumn + 3 , '3'], 'Remarks');
+            if ($previousVendor != null) {
+                // center at merge yung cell F:1-I1 at F:2-I2
+                $style = $sheet->getStyle([$startColumn, '1']);
+                $alignment = $style->getAlignment();
+                $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->mergeCells([$startColumn , '1' , $endColumn , '1']);
+                $sheet->setCellValue([$startColumn , '1' , $endColumn , '1'], $saleQuarter);
+                $style = $sheet->getStyle([$startColumn , '2']);
+                $alignment = $style->getAlignment();
+                $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->mergeCells([$startColumn , '2' , $vendorEndColumn , '2']);
+                $sheet->setCellValue([$startColumn , '2'], $row['Vendor']);
+                $style = $sheet->getStyle([3, 2]);
+                $alignment = $style->getAlignment();
+                $alignment->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->mergeCells([3 , 2 , 5 , 2]);
+                $sheet->setCellValue([3 , 2 , 5 , 2], 'STOCKS');
+                $sheet->setCellValue([3,3],'STOCK ON HAND');
+                $sheet->setCellValue([4,3],'SUBMITTED USAGE');
+                $sheet->setCellValue([5,3],'REQUIRED QUANTITY');
+                $sheet->setCellValue([6,3],'TOTAL QTY');
+                
+                $sheet->setCellValue([$startColumn , '3'], 'Quantity');
+                $sheet->setCellValue([$startColumn + 1 , '3'], 'Price');
+                $sheet->setCellValue([$startColumn + 2 , '3'], 'Total');
+                $sheet->setCellValue([$startColumn + 3 , '3'], 'Remarks');
 
-    }}
+            }
+        }
     //Query of Sales data
          if ($previousVendor != null) {
             $sheet->setCellValue([3 , $rowCount+4], $row['OnHand']);
@@ -178,41 +186,30 @@ $salesQuery= "
             $sheet->setCellValue([$startColumn + 2 , $rowCount+4], $row['Total']);
             $sheet->setCellValue([$startColumn + 3 , $rowCount+4], $row['Remarks']);
             $Columncount =+ 4;
-            
+         
+        }
 }
-}
+
+$negotiatedPrice = ($pricelist[count($pricelist)-1]-$pricelist[count($pricelist)-2])*$qtylist[count($qtylist)-1];
+$totalNegotiatedPrice += ($pricelist[count($pricelist)-1]-$pricelist[count($pricelist)-2])*$qtylist[count($qtylist)-1];
+$adjustedqty = ($qtylist[count($qtylist)-1]-$qtylist[count($qtylist)-2])*$pricelist[count($pricelist)-1];
+$totalAdjustedqty += ($qtylist[count($qtylist)-1]-$qtylist[count($qtylist)-2])*$pricelist[count($pricelist)-1];
+$highestColumn = $sheet->getHighestColumn();
+$columnIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+$highestRow = $sheet->getHighestRow();
+// $rowIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestRow); 
+// $firstSheet->setCellValue([$columnIndex + 1, $rowCount + 4], $negotiatedPrice);
+// $firstSheet->setCellValue([$columnIndex + 2, $rowCount + 4], $adjustedQty);
+$firstSheet->setCellValue([5,$firstRow],$totalNegotiatedPrice);
+$firstSheet->setCellValue([6,$firstRow],$totalAdjustedqty);
 $rowCount++;
+$firstRow++;
+$totalOverallNegPrice +=$totalNegotiatedPrice;
+$firstSheet->setCellValue([5,$grandTotalRow],$totalOverallNegPrice);
+$totalOverallAdjQty +=$totalAdjustedqty;
+$firstSheet->setCellValue([6,$grandTotalRow],$totalOverallAdjQty);
 }
-
-
-// $highestColumn = $sheet->getHighestColumn();
-// $columnIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-// $s4sheet = $sheet->getCell('T4'); //current price of the product
-// $S4 = $s4sheet->getValue();
-// $g4sheet = $sheet->getCell('H4'); //previous price of the product last quarter with the same vendor
-// $G4 = $g4sheet->getValue();
-// $r4sheet = $sheet->getCell('S4'); //current quantity of the product
-// $R4 = $r4sheet->getValue();
-// $negotiatedPrice = ($S4 - $G4) * $R4;
-// $sheet->setCellValue([$columnIndex + 1, 3],'Negotiated Cost Price');
-// $sheet->setCellValue([$columnIndex + 1, 4],$negotiatedPrice);
-
-
-// $highestColumn = $sheet->getHighestColumn();
-// $columnIndex = PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-// $s4sheet = $sheet->getCell('T4'); //
-// $S4 = $s4sheet->getValue();
-// $f4sheet = $sheet->getCell('G4');
-// $F4 = $g4sheet->getValue();
-// $r4sheet = $sheet->getCell('S4');
-// $R4 = $r4sheet->getValue();
-// $negotiatedPrice2 = ($R4 - $F4)*$S4;
-// $sheet->setCellValue([$columnIndex + 1, 3],'Adjusted Quantity');
-// $sheet->setCellValue([$columnIndex + 1, 4],$negotiatedPrice2);
 }
-
-
-
 $timestamp = date('Ymd_His');
 $filename = 'sales_' . $year . '_' . $timestamp . '.xlsx';
 $objWriter = new Xlsx($spreadsheet);

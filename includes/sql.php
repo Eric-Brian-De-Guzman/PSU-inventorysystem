@@ -242,11 +242,11 @@ function tableExists($table){
    /*--------------------------------------------------------------*/
   function join_stocks_table(){
      global $db;
-     $sql  =" SELECT s.id, s.product_id, s.quantity, s.date, p.name";
-    $sql  .=" as product_name, c.name AS category, p.stock_code AS code ";
+     $sql  =" SELECT s.id,s.category_id, s.stock_code, s.product_id, s.stock_onhand,p.name as product_name, s.submitted_usage,";
+    $sql  .=" s.req_qty,s.date,c.name";
     $sql  .=" from stocks s ";
     $sql  .=" INNER JOIN products p ON p.id = s.product_id";
-    $sql  .=" INNER JOIN categories c ON c.id = s.id";
+    $sql  .=" INNER JOIN categories c ON c.id = s.category_id"; 
     $sql  .=" ORDER BY s.id ASC";
     return find_by_sql($sql);
 
@@ -260,6 +260,18 @@ function tableExists($table){
      global $db;
      $p_name = remove_junk($db->escape($product_name));
      $sql = "SELECT name FROM products WHERE name like '%$p_name%' LIMIT 5";
+     $result = find_by_sql($sql);
+     return $result;
+   }
+   /*--------------------------------------------------------------*/
+  /* Function for Finding all product name
+  /* Request coming from ajax.php for auto suggest
+  /*--------------------------------------------------------------*/
+
+   function find_sales_by_title($product_name){
+     global $db;
+     $p_name = remove_junk($db->escape($product_name));
+     $sql = "SELECT name FROM sales WHERE name like '%$p_name%' LIMIT 5";
      $result = find_by_sql($sql);
      return $result;
    }
