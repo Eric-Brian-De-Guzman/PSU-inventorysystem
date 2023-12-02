@@ -126,7 +126,6 @@ $salesQuery= "
     $startColumn = 7;
     $endColumn = 10;
     $vendorEndColumn = 10;
-   
     //Sorted by Vendor and Month
     while ($row = $salesResult->fetch_assoc()) {
         $saleQuarter = $row['Quarter'];
